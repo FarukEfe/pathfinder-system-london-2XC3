@@ -17,10 +17,16 @@ class DataLoader:
         
         for i in range(len(_connection)):
             row = _connection.iloc[i]
+            unpack = lambda x: int(x)
             p, q, w = row['station1'], row['station2'], row['time']
+            p, q, w = unpack(p), unpack(q), unpack(w)
             obj.add_edge(p, q, w)
         
         return obj
+
+    
+dl = DataLoader('./.csv')
+graph = dl.graph()
 
 
         

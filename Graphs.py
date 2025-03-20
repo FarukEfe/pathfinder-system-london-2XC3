@@ -41,7 +41,7 @@ class Graph:
 class WeightedGraph(Graph):
 
     def __init__(self, nodes):
-        super().__init__()
+        super().__init__(nodes=nodes)
 
     def w(node1: int, node2: int) -> float:
         pass
