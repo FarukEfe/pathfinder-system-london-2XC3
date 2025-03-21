@@ -32,9 +32,5 @@ class DataLoader:
             id, x, y = int(row['id']), float(row['latitude']), float(row['longitude'])
             obj[id] = (x, y)
         return obj
-    
-dl = DataLoader('./.csv')
-graph = dl.graph()
-
 
         

@@ -20,11 +20,11 @@ class Graph:
     def add_edge(self, start:int, end:int, w:float):
         nodes = list(self.graph.keys())
         if start not in nodes or end not in nodes:
-            print('Discarding `has_edge` call since not both endpoints exist.')
+            #print('Discarding `has_edge` call since not both endpoints exist.')
             return
         
         if self.has_edge(start, end):
-            print(f'Edge ({start},{end}) already exists. Updating weight...')
+            #print(f'Edge ({start},{end}) already exists. Updating weight...')
             self.weights[(start,end)] = w
             self.weights[(end,start)] = w
 

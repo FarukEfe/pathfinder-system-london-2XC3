@@ -1,18 +1,20 @@
-from SPAlgorithm import SPAlgorithm
-from Graphs import HeuristicGraph
+from Algorithms.SPAlgorithm import SPAlgorithm
+from Graphs import HeuristicGraph, Graph, WeightedGraph
+
+import heapq
 
 class AStar(SPAlgorithm):
 
     def __init__(self):
         pass
 
-    def calc_sp(self, graph, source, dest, heuristic: dict[int, tuple[float,float]]):
+    def calc_sp(self, graph: Graph, source: int, dest: int, heuristic: dict[int, tuple[float,float]]):
        # Our heuristic is the latitude / longitude distance between the stations.
        # We actively pick the station that we can travel to in the shortest time, and has the smallest heuristic to destination
-       heuristic_graph = self.__compute_heuristic(heuristic) # Get heuristic value from each node to destination
+       # heuristic_graph = self.__compute_heuristic(dest, heuristic) # Get heuristic value from each node to destination
        return
 
-    def __compute_heuristic(self, dest, heuristic: dict[int, tuple[float,float]]) -> HeuristicGraph:
+    def __compute_heuristic(self, dest: int, heuristic: dict[int, tuple[float,float]]) -> HeuristicGraph:
         # Compute heuristic graph from the latitude, longitude data
         nodes, coords = len(list(heuristic.keys())), heuristic[dest]
         heuristic_graph = HeuristicGraph(nodes, dest, coords)
