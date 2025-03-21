@@ -1,4 +1,4 @@
-from SPAlgorithm import SPAlgorithm
+from Algorithms.SPAlgorithm import SPAlgorithm
 
 class BellmanFord(SPAlgorithm):
 

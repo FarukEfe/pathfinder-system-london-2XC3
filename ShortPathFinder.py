@@ -1,5 +1,5 @@
 from Graphs import *
-from Algorithms import SPAlgorithm, AStar
+from Algorithms import AStar, SPAlgorithm
 
 class ShortPathFinder:
 
