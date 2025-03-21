@@ -24,6 +24,14 @@ class DataLoader:
         
         return obj
 
+    def heuristic_data(self) -> dict[int,tuple[float,float]]:
+        _data: pd.DataFrame = self.stations[['id', 'latitude', 'longitude']]
+        obj: dict[int, tuple[float,float]] = {}
+        for i in range(len(_data)):
+            row = _data.iloc[i]
+            id, x, y = int(row['id']), float(row['latitude']), float(row['longitude'])
+            obj[id] = (x, y)
+        return obj
     
 dl = DataLoader('./.csv')
 graph = dl.graph()
