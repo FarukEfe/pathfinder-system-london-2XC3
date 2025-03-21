@@ -4,7 +4,7 @@ from Algorithms import AStar, BellmanFord, Dijkstra
 
 if __name__ == "__main__":
 
-    data = DataLoader('./.csv')
+    data = DataLoader('./Dataset')
     finder = ShortPathFinder()
     graph, heuristic = data.graph(), data.heuristic_data()
 
