@@ -11,5 +11,11 @@ if __name__ == "__main__":
     finder.set_graph(graph)
     finder.set_algorithm(AStar())
     finder.set_heuristic(heuristic)
-
-    finder.calc_short_path(2, 8)
+    
+    res = finder.calc_short_path(2, 8)
+    try:
+        pred_dict, path = res
+        print(pred_dict)
+        print(path)
+    except:
+        print(res)

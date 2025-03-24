@@ -45,8 +45,8 @@ class WeightedGraph(Graph):
     def __init__(self, nodes):
         super().__init__(nodes=nodes)
 
-    def w(node1: int, node2: int) -> float:
-        pass
+    def w(self, node1: int, node2: int) -> float:
+        return self.weights[(node1,node2)]
 
 # Inquire more about what heuristics is
 class HeuristicGraph(WeightedGraph):
@@ -55,9 +55,9 @@ class HeuristicGraph(WeightedGraph):
         super().__init__(nodes)
         self.dest = dest
         self.x, self.y = coords[0], coords[1]
-        self.__heuristic: dict[int,float] = []
+        self.__heuristic: dict[int:float] = {}
 
-    def get_heuristic(self) -> dict[int,float]:
+    def get_heuristic(self) -> dict[int:float]:
         return self.__heuristic
     
     def set_heuristic(self, src: int, coords: tuple[float,float]):
