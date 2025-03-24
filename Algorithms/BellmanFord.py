@@ -11,7 +11,7 @@ class BellmanFord(SPAlgorithm):
         # The Algorithm Comes Here
         # Initialize the distance to all vertices as infinity
         distances = {vertex: float('inf') for vertex,_ in graph.graph.items()}
-        paths = {vertex: [] for vertex,_ in graph.graph.items()}
+        prev = {vertex: -1 for vertex,_ in graph.graph.items()}
         distances[source] = 0
 
         # Relax all edges up to k times
@@ -24,9 +24,9 @@ class BellmanFord(SPAlgorithm):
                 for v in graph.graph[u]:
                     weight = graph.weights[(u, v)]
                     if distances[u] + weight < new_distances[v]:
-                        paths[u].append(v)
+                        prev[v] = u
                         new_distances[v] = distances[u] + weight
 
             distances = new_distances
 
-        return distances, paths
+        return distances, prev

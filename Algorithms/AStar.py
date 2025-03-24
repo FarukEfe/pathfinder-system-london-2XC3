@@ -26,17 +26,17 @@ class AStar(SPAlgorithm):
         heapq.heapify(open_set)
 
         # cheapest path from start to n currently known
-        g_score = { k:float('inf') for k,_ in graph.graph.items() } #g_score = [float('inf') for n in len(graph.graph)]
-        f_score = { k:float('inf') for k,_ in graph.graph.items() } #f_score = [float('inf') for n in len(graph.graph.keys())]
+        g_score = { k:float('inf') for k,_ in graph.graph.items() }
+        f_score = { k:float('inf') for k,_ in graph.graph.items() }
         g_score[source] = 0
         f_score[source] = h_table[source]
 
         while len(open_set) > 0:
-            #current = 1 # Assume the node in open_set with lowest f_score value
-            current = min(f_score, key=f_score.get)
+            current = min(f_score, key=f_score.get) # node in open_set with lowest f_score value (maybe make more efficient?)
 
             if current == dest:
                 path = self.reconstruct_path(came_from=came_from, current=current)
+                came_from[source] = 0
                 return (came_from, path)
         
             neighbors = graph.graph[current]
@@ -48,7 +48,7 @@ class AStar(SPAlgorithm):
                     f_score[n] = tentative_g_score + h_table[n]
                     if n not in open_set:
                         heapq.heappush(open_set, n)
-            # Remove current minimum since iti cannot be revisited
+            # Remove current minimum since it cannot be revisited
             f_score.pop(current)
             open_set.remove(current)
         return -1

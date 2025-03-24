@@ -8,7 +8,7 @@ if __name__ == "__main__":
     finder = ShortPathFinder()
     graph, heuristic = data.graph(), data.heuristic_data()
 
-    # A star
+    # A*
     # finder.set_graph(graph)
     # finder.set_algorithm(AStar())
     # finder.set_heuristic(heuristic)
@@ -16,25 +16,29 @@ if __name__ == "__main__":
     # res = finder.calc_short_path(2, 8)
     # try:
     #     pred_dict, path = res
-    #     print(pred_dict[1])
+    #     print(pred_dict)
     #     print(path)
     # except:
     #     print(res)
 
-    # BF
-    finder.set_graph(graph)
-    finder.set_algorithm(BellmanFord())
-    #res = finder.calc_short_path(2, 8)
-    #res = finder.calc_short_path(2, dest=8)
-    distances, paths = finder.calc_short_path(2, k=15)
-    print(distances)
-    print(paths)
-
-    # # D
+    # BELLMAN FORD
+    # source, dest = 2, 8
     # finder.set_graph(graph)
-    # finder.set_algorithm(Dijkstra())
-    # #res = finder.calc_short_path(2, 8)
-    # #res = finder.calc_short_path(2, dest=8)
-    # distances = finder.calc_short_path(2, k=15)
-    # print(distances)
-    # # print(paths)
+    # finder.set_algorithm(BellmanFord())
+    # distances, prev = finder.calc_short_path(source, k=15)
+    # print(distances, prev)
+
+    # DIJKSTRA
+    source, dest = 2, 8
+    finder.set_graph(graph)
+    finder.set_algorithm(Dijkstra())
+    dist, prev = finder.calc_short_path(source, k=15)
+    print(prev, dist)
+
+    # TEST
+    # n = 8
+    # path = []
+    # while n != 2:
+    #     path = [n] + path
+    #     n = prev[n]
+    # print(path)

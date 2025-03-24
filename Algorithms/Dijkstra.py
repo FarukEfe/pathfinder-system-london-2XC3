@@ -1,36 +1,33 @@
 from Algorithms.SPAlgorithm import SPAlgorithm
 from Graphs import Graph, WeightedGraph
 import heapq
-import copy
+from copy import deepcopy, copy
 
 class Dijkstra(SPAlgorithm):
 
     def __init__(self):
         pass
 
-    def calc_sp(self, graph: WeightedGraph, source, k):
-        # The Algorithm Comes Here
-        # Initialize the priority queue and distances
-        distances = {vertex: float('inf') for vertex,_ in graph.graph.items()}
-        distances[source] = 0
-        pq = [(0, source)]  # (distance, vertex)
+    def calc_sp(self, graph: WeightedGraph, source: int, k: int):
 
-        # Perform k steps of Dijkstra's algorithm
-        for _ in range(k):
-            if not pq:
-                break
+        dist_table = { v: float('inf') for v in graph.graph.keys() }
+        prev_table = { v: -1 for v in graph.graph.keys() }
+        dist_table[source], prev_table[source] = 0, source
+        pq = [(0, source)]
+        
+        heapq.heapify(pq)
+        while len(pq) > 0:
+            _, u = heapq.heappop(pq)
+            #print(_, u, graph.graph[u])
+            # Relax
+            for v in graph.graph[u]:
+                #print(f'edge: {v}')
+                alt = dist_table[u] + graph.w(u,v)
+                if alt < dist_table[v]:
+                    dist_table[v] = alt
+                    prev_table[v] = u
+                    heapq.heappush(pq, (alt, v))
+        
+        return dist_table, prev_table
 
-            # Get the node with the smallest distance
-            current_dist, u = heapq.heappop(pq)
 
-            if current_dist > distances[u]:
-                continue
-
-            # Relax edges of the current node
-            for v, weight in graph.graph[u]:
-                distance = current_dist + weight
-                if distance < distances[v]:
-                    distances[v] = distance
-                    heapq.heappush(pq, (distance, v))
-
-        return distances
