@@ -1,6 +1,7 @@
 from Graphs import *
 from Algorithms import AStar, SPAlgorithm
 
+
 class ShortPathFinder:
 
     def __init__(self):
