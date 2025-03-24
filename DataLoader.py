@@ -10,7 +10,7 @@ class DataLoader:
         self.stations = pd.read_csv(os.path.join(path, 'london_stations.csv'))
     
     def graph(self) -> Graph:
-        n_node = max(self.stations['id'])
+        n_node = max(self.stations['id']) + 1
         _connection: pd.DataFrame = self.connections[['station1', 'station2', 'time']]
         obj = WeightedGraph(n_node)
         _connection.itertuples()

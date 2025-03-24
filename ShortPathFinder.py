@@ -1,5 +1,5 @@
 from Graphs import *
-from Algorithms import AStar, SPAlgorithm
+from Algorithms import AStar, BellmanFord, Dijkstra, SPAlgorithm
 
 
 class ShortPathFinder:
@@ -9,12 +9,14 @@ class ShortPathFinder:
         self.graph: Graph = None
         self.heuristic_data: dict[int, tuple[float,float]] = None
 
-    def calc_short_path(self, source:int, dest:int) -> float:
+    def calc_short_path(self, source:int, dest:int = None, k:int = None):
         if isinstance(self.algorithm, AStar):
-            if not self.heuristic_data: return None # Cannot compute AStart without heuristic
+            if not self.heuristic_data or not dest: return -1 # Cannot compute AStart without heuristic
             return self.algorithm.calc_sp(self.graph, source, dest, self.heuristic_data)
-        return self.algorithm.calc_sp(self.graph, source, dest)
-
+        
+        if not k: return -1
+        return self.algorithm.calc_sp(self.graph, source, k)
+    
     def set_graph(self, graph: Graph):
         self.graph = graph
     
