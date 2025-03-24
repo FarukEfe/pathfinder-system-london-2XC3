@@ -36,9 +36,9 @@ if __name__ == "__main__":
     print(prev, dist)
 
     # TEST
-    # n = 8
-    # path = []
-    # while n != 2:
-    #     path = [n] + path
-    #     n = prev[n]
-    # print(path)
+    n = 8
+    path = []
+    while n != 2:
+        path = [n] + path
+        n = prev[n]
+    print(path)
