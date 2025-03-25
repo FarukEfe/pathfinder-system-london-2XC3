@@ -8,10 +8,6 @@ class AStar(SPAlgorithm):
     def __init__(self):
         pass
 
-    '''
-    TO-DO'S:
-    - 
-    '''
     def calc_sp(self, graph: WeightedGraph, source: int, dest: int, heuristic: dict[int: tuple[float,float]]):
         # Base case return
         nodes = graph.graph.keys()
