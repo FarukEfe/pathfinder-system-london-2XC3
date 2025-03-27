@@ -13,7 +13,6 @@ class DataLoader:
         n_node = max(self.stations['id']) + 1
         _connection: pd.DataFrame = self.connections[['station1', 'station2', 'time']]
         obj = WeightedGraph(n_node)
-        _connection.itertuples()
         
         for i in range(len(_connection)):
             row = _connection.iloc[i]
@@ -31,6 +30,17 @@ class DataLoader:
             row = _data.iloc[i]
             id, x, y = int(row['id']), float(row['latitude']), float(row['longitude'])
             obj[id] = (x, y)
+        return obj
+
+    def line_table(self) -> dict[(int,int): int]:
+        _data: pd.DataFrame = self.connections[['station1','station2','line']]
+        obj: dict[(int,int): int] = {}
+        for i in range(len(_data)):
+            row = _data.iloc[i]
+            unpack = lambda x: int(x)
+            p, q, l = row['station1'], row['station2'], row['line']
+            p, q, l = unpack(p), unpack(q), unpack(l)
+            obj[(p,q)] = l
         return obj
 
         
