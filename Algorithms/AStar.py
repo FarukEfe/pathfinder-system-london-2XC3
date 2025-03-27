@@ -18,21 +18,20 @@ class AStar(SPAlgorithm):
         h_table = heuristic_graph.get_heuristic() # Distance list of each node to the end
 
         came_from: dict[int:int] = { source: -1 } # Predecessor dictionary
-        open_set = [source] # Initialize open list & predecessor list
+        open_set = [(0, source)] # Initialize open list & predecessor list
         heapq.heapify(open_set)
 
         # cheapest path from start to n currently known
-        g_score = { k:float('inf') for k,_ in graph.graph.items() }
-        f_score = { k:float('inf') for k,_ in graph.graph.items() }
+        g_score = { k:float('inf') for k in graph.graph.keys() }
+        f_score = { k:float('inf') for k in graph.graph.keys() }
         g_score[source] = 0
         f_score[source] = h_table[source]
 
         while len(open_set) > 0:
-            current = min(f_score, key=f_score.get) # node in open_set with lowest f_score value (maybe make more efficient?)
+            _, current = heapq.heappop(open_set)
 
             if current == dest:
                 path = self.reconstruct_path(came_from=came_from, current=current)
-                came_from[source] = 0
                 return (came_from, path)
         
             neighbors = graph.graph[current]
@@ -43,10 +42,7 @@ class AStar(SPAlgorithm):
                     g_score[n] = tentative_g_score
                     f_score[n] = tentative_g_score + h_table[n]
                     if n not in open_set:
-                        heapq.heappush(open_set, n)
-            # Remove current minimum since it cannot be revisited
-            f_score.pop(current)
-            open_set.remove(current)
+                        heapq.heappush(open_set, (tentative_g_score, n))
         return -1
 
     def __compute_heuristic(self, dest: int, heuristic: dict[int: tuple[float,float]]) -> HeuristicGraph:

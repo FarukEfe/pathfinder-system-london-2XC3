@@ -11,7 +11,8 @@ class ShortPathFinder:
 
     def calc_short_path(self, source:int, dest:int = None, k:int = None):
         if isinstance(self.algorithm, AStar):
-            if not self.heuristic_data or not dest: return -1 # Cannot compute AStart without heuristic
+            if not self.heuristic_data or not dest: return -1 # Cannot compute AStar without heuristic
+            if dest not in self.heuristic_data.keys(): return -2 # Heuristic table doesn't have all nodes in station table
             return self.algorithm.calc_sp(self.graph, source, dest, self.heuristic_data)
         
         if not k: return -1

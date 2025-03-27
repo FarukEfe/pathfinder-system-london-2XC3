@@ -90,15 +90,15 @@ def experiment_random():
 
 def experiment_london():
 
-    N = 40
+    N = 300
     time_dijkstra, time_astar = [], []
 
-    data = DataLoader('./Dataset')
-    finder = SPF()
+    data, finder = DataLoader('./Dataset'), SPF()
     graph, heuristic = data.graph(), data.heuristic_data()
-    finder.set_graph(graph)
     finder.set_heuristic(heuristic)
-    _nodes = list(graph.graph.keys())
+    finder.set_graph(graph)
+
+    _nodes = list(heuristic.keys())
     for i in range(N):
 
         print(f'Iteration {i+1}')
@@ -109,7 +109,7 @@ def experiment_london():
         finder.set_algorithm(Dijkstra())
 
         start = timeit.default_timer()
-        finder.calc_short_path(source, k=1)
+        finder.calc_short_path(source, k=5)
         end = timeit.default_timer()
 
         time_dijkstra.append(end - start)
