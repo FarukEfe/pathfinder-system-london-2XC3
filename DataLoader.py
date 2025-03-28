@@ -42,3 +42,19 @@ class DataLoader:
             p, q, l = unpack(p), unpack(q), unpack(l)
             obj[(p,q)] = l
         return obj
+
+    def station_lines(self) -> dict[int: list[int]]:
+        _data: pd.DataFrame = self.connections[['station1','station2','line']]
+        obj: dict[int: list[int]] = {}
+        for i in range(len(_data)):
+            row = _data.iloc[i]
+            unpack = lambda x: int(x)
+            p, q, l = row['station1'], row['station2'], row['line']
+            p, q, l = unpack(p), unpack(q), unpack(l)
+            # Add line to p
+            try: obj[p].append(l)
+            except: obj[p] = [l]
+            # Add line to q
+            try: obj[q].append(l)
+            except: obj[q] = [l]
+        return obj

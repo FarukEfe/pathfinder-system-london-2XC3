@@ -63,12 +63,20 @@ class Generator:
 
 class Tests:
 
-    def test_random(self, n_node:int, n_edge:int, w_min:int=0, w_max:int=5, lat_min:float=50,lat_max:float=53,long_min:float=0,long_max:float=2):
+    def test_random(self, n_node:int, n_edge:int, 
+                    w_min:int=0, w_max:int=5,
+                    lat_min:float=50, lat_max:float=53, 
+                    long_min:float=0,long_max:float=2,
+                    file_name: str = 'P5.jpg'
+                    ):
         
         N, time_dijkstra, time_astar = 200, [], []
         finder, generator = SPF(), Generator()
 
-        for _ in range(N):
+        for i in range(N):
+
+            print(f'Test Density ({i})', end='\r')
+
             _nodes, graph = generator.create_random_graph(n_node, n_edge, w_min, w_max)
             _data = generator.create_heuristic_data(_nodes, lat_min, lat_max, long_min, long_max)
             source, dest = sample(_nodes, k=2)
@@ -93,11 +101,12 @@ class Tests:
         labels = ['Dijkstra\'s', 'A Star']
         runs = [time_dijkstra, time_astar]
         _data = { 'labels': labels, 'runs': runs, 'hp': (n_node,n_edge) }
-        plot(_data, fname='Part5.jpg')
+        plot(_data, fname=file_name)
 
-    def test_london(self):
+    def test_london(self, points: list[tuple[int,int]] = None, file_name: str = 'P5.jpg'):
 
         N, time_dijkstra, time_astar = 300, [], []
+        if points is not None: N = len(points)
 
         data, finder = DataLoader('./Dataset'), SPF()
         graph, heuristic = data.graph(), data.heuristic_data()
@@ -105,10 +114,13 @@ class Tests:
         finder.set_graph(graph)
 
         _nodes = list(heuristic.keys())
-        for _ in range(N):
-            
+        for i in range(N):
+
+            print(f'Test London ({i})', end='\r')
+
             source, dest = sample(_nodes, k=2)
-            
+            if points is not None: source, dest = points[i]
+
             # DJ Test
             finder.set_algorithm(Dijkstra())
             start = timeit.default_timer()
@@ -126,7 +138,7 @@ class Tests:
         labels = ['Dijkstra\'s', 'A Star']
         runs = [time_dijkstra, time_astar]
         _data = { 'labels': labels, 'runs': runs }
-        plot(_data, fname='Part5.jpg')
+        plot(_data, fname=file_name)
     
     def test_lines(self):
         # load .csv data
@@ -136,8 +148,6 @@ class Tests:
         finder.set_graph(graph)
         # sample a point
         src, dest = sample(list(heuristic.keys()), k=2)
-        src, dest = 2,8
-
         # sp Dijkstra's
         finder.set_algorithm(Dijkstra())
         _, prev = finder.calc_short_path(src, k=1)
@@ -146,8 +156,8 @@ class Tests:
         edges = [(p[i],p[i+1]) for i in range(len(p)-1)]
         _l = set([(lines[edge] if edge in lines.keys() else lines[(edge[1], edge[0])]) for edge in edges])
         n_line_dj = len(_l)
-        print(f"Dijk: {n_line_dj}")
-        
+        #print(f"Dijk: {n_line_dj}")
+
         # sp A*
         finder.set_algorithm(AStar())
         n_line_astar = 0
@@ -158,12 +168,44 @@ class Tests:
             n_line_astar = len(_l)
         except:
             pass
-        print(f"A*: {n_line_astar}")
+        #print(f"A*: {n_line_astar}")
+        # Return the minimum line switches between src and dest
+        return (src, dest, min(n_line_dj, n_line_astar))
 
 if __name__ == '__main__':
     tests = Tests()
-    #tests.test_random(n_node=50,n_edge=500)
-    tests.test_lines()
+    # Test A* vs Dijkstra's on London Dataset
+    print('\nStep One\n')
+    tests.test_london(file_name='Plots/P5_London.jpg')
 
-# TODO:
-# - Write
+    # Test A* vs Dijkstra's on Varying Densities
+    print('\nStep Two\n')
+    n_node, n_edges = 50, [10, 50, 100, 150, 250, 500]
+    for edge in n_edges:
+        print(f'\nEdge: {edge}\n')
+        tests.test_random(n_node=n_node,n_edge=edge,file_name=f'Plots/P5_Edge_{edge}.jpg')
+
+    # Get line switches of optimal path for varying points and classify them
+    line_switch = {
+        'same_line': [],
+        'one_line': [],
+        'multiple_line': []
+    }
+
+    print('\nStep Three\n')
+    for i in range(300):
+        print(f'Test Lines ({i})', end='\r')
+        p, q, n = tests.test_lines()
+        if n == 1: line_switch['same_line'].append((p,q))
+        if n == 2: line_switch['one_line'].append((p,q))
+        else: line_switch['multiple_line'].append((p,q))
+    
+    # Make sure all lists have same length for fair comparison
+    min_len = min(len(line_switch['same_line']), len(line_switch['one_line']), len(line_switch['multiple_line']))
+    line_switch['same_line'], line_switch['one_line'], line_switch['multiple_line'] = line_switch['same_line'][:min_len], line_switch['one_line'][:min_len], line_switch['multiple_line'][:min_len]
+    
+    # Test A* vs Dijkstra's on varying line switches in optimal path
+    print('\nStep Four\n')
+    tests.test_london(line_switch['same_line'], file_name='Plots/P5_0_Line.jpg')
+    tests.test_london(line_switch['one_line'], file_name='Plots/P5_1_Line.jpg')
+    tests.test_london(line_switch['multiple_line'], file_name='Plots/P5_2_Line.jpg')
