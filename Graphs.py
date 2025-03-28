@@ -37,9 +37,6 @@ class Graph:
     def get_num_of_nodes(self) -> int:
         return len(list(self.graph.keys()))
 
-    def w(node:int) -> float: # Why have this here but not the bottom? (Take it up w TA or Prof)
-        pass
-
 class WeightedGraph(Graph):
 
     def __init__(self, nodes):
@@ -48,7 +45,6 @@ class WeightedGraph(Graph):
     def w(self, node1: int, node2: int) -> float:
         return self.weights[(node1,node2)]
 
-# Inquire more about what heuristics is
 class HeuristicGraph(WeightedGraph):
 
     def __init__(self, nodes: int, dest: int, coords: tuple[float,float]):

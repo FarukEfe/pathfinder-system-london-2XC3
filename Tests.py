@@ -137,25 +137,24 @@ class Tests:
         # sample a point
         src, dest = sample(list(heuristic.keys()), k=2)
         src, dest = 2,8
+
         # sp Dijkstra's
         finder.set_algorithm(Dijkstra())
         _, prev = finder.calc_short_path(src, k=1)
         p = reconstruct_path(prev, dest, src)
         n_line_dj = 0
-        try:
-            edges = [(p[i],p[i+1]) for i in range(len(p)-1)]
-            _l = set([lines[edge] for edge in edges])
-            n_line_dj = len(_l)
-        except:
-            pass
+        edges = [(p[i],p[i+1]) for i in range(len(p)-1)]
+        _l = set([(lines[edge] if edge in lines.keys() else lines[(edge[1], edge[0])]) for edge in edges])
+        n_line_dj = len(_l)
         print(f"Dijk: {n_line_dj}")
+        
         # sp A*
         finder.set_algorithm(AStar())
         n_line_astar = 0
         try:
             _, p = finder.calc_short_path(src,dest)
             edges = [(p[i],p[i+1]) for i in range(len(p)-1)]
-            _l = set([lines[edge] for edge in edges])
+            _l = set([(lines[edge] if edge in lines.keys() else lines[(edge[1], edge[0])]) for edge in edges])
             n_line_astar = len(_l)
         except:
             pass

@@ -42,5 +42,3 @@ class DataLoader:
             p, q, l = unpack(p), unpack(q), unpack(l)
             obj[(p,q)] = l
         return obj
-
-        
