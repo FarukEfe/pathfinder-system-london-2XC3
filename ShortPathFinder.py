@@ -20,9 +20,10 @@ class ShortPathFinder:
     
     def set_graph(self, graph: Graph):
         self.graph = graph
-    
-    def set_heuristic(self, heuristic_data: dict[int, tuple[float,float]]):
-        self.heuristic_data = heuristic_data
 
     def set_algorithm(self, algorithm: SPAlgorithm):
         self.algorithm = algorithm
+
+    # Not in UML
+    def set_heuristic(self, heuristic_data: dict[int, tuple[float,float]]):
+        self.heuristic_data = heuristic_data

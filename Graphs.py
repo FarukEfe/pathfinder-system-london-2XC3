@@ -8,12 +8,17 @@ class Graph:
         self.weights: dict[tuple[int,int]: float] = {}
         for node in range(nodes):
             self.graph[node] = []
+    
+    def get_adj_nodes(self, node: int) -> list[int]:
+        if node not in self.graph.keys(): return -1
+        return self.graph[node]
 
     def add_node(self, node: int):
         nodes = list(self.graph.keys())
         if node in nodes: return 
         self.graph[node] = []
 
+    # Not in UML
     def has_edge(self, start: int, end: int):
         return self.graph[start] and (end in self.graph[start])
 
@@ -36,6 +41,11 @@ class Graph:
 
     def get_num_of_nodes(self) -> int:
         return len(list(self.graph.keys()))
+    
+    def w(node: int) -> float:
+        raise NotImplementedError(
+            "Proper implementation is listed in WeightedGraph class type. Use that instance instead."
+        )
 
 class WeightedGraph(Graph):
 
@@ -56,6 +66,7 @@ class HeuristicGraph(WeightedGraph):
     def get_heuristic(self) -> dict[int:float]:
         return self.__heuristic
     
+    # Not in UML
     def set_heuristic(self, src: int, coords: tuple[float,float]):
         x, y = coords
         distance = sqrt(abs(self.x - x)**2 + abs(self.y - y)**2)

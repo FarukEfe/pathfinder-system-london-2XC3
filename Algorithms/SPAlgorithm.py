@@ -3,7 +3,11 @@ from Graphs import *
 class SPAlgorithm():
 
     def __init__(self):
-        pass
+        raise NotImplementedError(
+            "Abstract method, blueprint for algorithm APIs. Use the algorithm instances instead."
+        )
 
-    def calc_sp(graph: Graph, source:int, dest:int) -> float:
-        pass
+    def calc_sp(self, graph: Graph, source:int, dest:int) -> float:
+        raise NotImplementedError(
+            "Abstract method, calc_sp() implementation varies based on algorithm so it's not implemented here."
+        )
