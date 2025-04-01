@@ -22,11 +22,17 @@ class BellmanFord(SPAlgorithm):
             # For each edge in the graph
             for u in graph.graph.keys():
                 for v in graph.graph[u]:
-                    weight = graph.weights[(u, v)]
+                    weight = graph.w(u, v)
                     if distances[u] + weight < new_distances[v]:
                         prev[v] = u
                         new_distances[v] = distances[u] + weight
 
             distances = new_distances
+        
+        # Account for negative cycles
+        for u in graph.graph.keys():
+            for v in graph.graph[u]:
+                if distances[u] + graph.w(u, v) < distances[v]:
+                    return -1 # Negative cycle occurs
 
         return distances, prev
