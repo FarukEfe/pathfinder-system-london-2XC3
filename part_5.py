@@ -37,6 +37,19 @@ def plot(_data, fname: str):
         axis[i].legend()
     plt.savefig(fname)
 
+def scatter(_data, fname: str):
+    astar, dijkstra, edges = _data['runs_astar'], _data['runs_dijkstra'], _data['edges']
+    fig, axis = plt.subplots(1, 1, figsize=(12,12))
+    fig.subplots_adjust(left=0.08, bottom=0.08, right=0.92, top=0.92, wspace=0.2, hspace=0.5)
+    axis.plot(edges, dijkstra, color='blue', label="Dijkstra's")
+    axis.plot(edges, astar, color='orange', label="A*")
+    axis.set_xlabel('# Edges')
+    axis.set_ylabel('Run time in ms')
+    axis.set_title('Runtime: Dijkstra\'s vs. A* by Graph Density')
+    axis.legend()
+    plt.savefig(fname)
+
+
 # MARK: GENERATOR
 
 class Generator:
@@ -103,6 +116,9 @@ class Tests:
         _data = { 'labels': labels, 'runs': runs, 'hp': (n_node,n_edge) }
         plot(_data, fname=file_name)
 
+        avg_astar, avg_dijkstra = sum(time_astar)/len(time_astar), sum(time_dijkstra)/len(time_dijkstra)
+        return avg_astar, avg_dijkstra
+    
     def test_london(self, points: list[tuple[int,int]] = None, file_name: str = 'P5.jpg'):
 
         N, time_dijkstra, time_astar = 300, [], []
@@ -175,37 +191,48 @@ class Tests:
 if __name__ == '__main__':
     tests = Tests()
     # Test A* vs Dijkstra's on London Dataset
-    print('\nStep One\n')
-    tests.test_london(file_name='Plots/P5_London.jpg')
+    # print('\nStep One\n')
+    # tests.test_london(file_name='plots/P5_London.jpg')
 
     # Test A* vs Dijkstra's on Varying Densities
     print('\nStep Two\n')
     n_node, n_edges = 50, [10, 50, 100, 150, 250, 500]
+    astar_runs, dijkstra_runs = [], []
     for edge in n_edges:
         print(f'\nEdge: {edge}\n')
-        tests.test_random(n_node=n_node,n_edge=edge,file_name=f'Plots/P5_Edge_{edge}.jpg')
-
-    # Get line switches of optimal path for varying points and classify them
-    line_switch = {
-        'same_line': [],
-        'one_line': [],
-        'multiple_line': []
+        t_astar, t_dijkstra = tests.test_random(n_node=n_node,n_edge=edge,file_name=f'plots/P5_Edge_{edge}.jpg')
+        astar_runs.append(t_astar)
+        dijkstra_runs.append(t_dijkstra)
+    
+    density_run_data = {
+        'runs_astar': astar_runs,
+        'runs_dijkstra': dijkstra_runs,
+        'edges': n_edges
     }
 
-    print('\nStep Three\n')
-    for i in range(300):
-        print(f'Test Lines ({i})', end='\r')
-        p, q, n = tests.test_lines()
-        if n == 1: line_switch['same_line'].append((p,q))
-        if n == 2: line_switch['one_line'].append((p,q))
-        else: line_switch['multiple_line'].append((p,q))
+    scatter(density_run_data, fname='plots/astar_dijkstra_density_runtimes.jpg')
+
+    # Get line switches of optimal path for varying points and classify them
+    # line_switch = {
+    #     'same_line': [],
+    #     'one_line': [],
+    #     'multiple_line': []
+    # }
+
+    # print('\nStep Three\n')
+    # for i in range(300):
+    #     print(f'Test Lines ({i})', end='\r')
+    #     p, q, n = tests.test_lines()
+    #     if n == 1: line_switch['same_line'].append((p,q))
+    #     if n == 2: line_switch['one_line'].append((p,q))
+    #     else: line_switch['multiple_line'].append((p,q))
     
-    # Make sure all lists have same length for fair comparison
-    min_len = min(len(line_switch['same_line']), len(line_switch['one_line']), len(line_switch['multiple_line']))
-    line_switch['same_line'], line_switch['one_line'], line_switch['multiple_line'] = line_switch['same_line'][:min_len], line_switch['one_line'][:min_len], line_switch['multiple_line'][:min_len]
+    # # Make sure all lists have same length for fair comparison
+    # min_len = min(len(line_switch['same_line']), len(line_switch['one_line']), len(line_switch['multiple_line']))
+    # line_switch['same_line'], line_switch['one_line'], line_switch['multiple_line'] = line_switch['same_line'][:min_len], line_switch['one_line'][:min_len], line_switch['multiple_line'][:min_len]
     
-    # Test A* vs Dijkstra's on varying line switches in optimal path
-    print('\nStep Four\n')
-    tests.test_london(line_switch['same_line'], file_name='Plots/P5_0_Line.jpg')
-    tests.test_london(line_switch['one_line'], file_name='Plots/P5_1_Line.jpg')
-    tests.test_london(line_switch['multiple_line'], file_name='Plots/P5_2_Line.jpg')
+    # # Test A* vs Dijkstra's on varying line switches in optimal path
+    # print('\nStep Four\n')
+    # tests.test_london(line_switch['same_line'], file_name='plots/P5_0_Line.jpg')
+    # tests.test_london(line_switch['one_line'], file_name='plots/P5_1_Line.jpg')
+    # tests.test_london(line_switch['multiple_line'], file_name='plots/P5_2_Line.jpg')
