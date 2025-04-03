@@ -11,6 +11,7 @@ if __name__ == "__main__":
     graph, heuristic = data.graph(), data.heuristic_data()
 
     # A*
+    print('A*')
     finder.set_graph(graph)
     finder.set_algorithm(AStar())
     finder.set_heuristic(heuristic)
@@ -25,20 +26,22 @@ if __name__ == "__main__":
         print(res)
 
     # BELLMAN FORD
-    # source, dest = 2, 8
-    # finder.set_graph(graph)
-    # finder.set_algorithm(BellmanFord())
-    # distances, prev = finder.calc_short_path(source, k=15)
-    # print(distances, prev)
+    print('Bellman-Ford')
+    source, dest = 2, 8
+    finder.set_graph(graph)
+    finder.set_algorithm(BellmanFord())
+    distance, prev = finder.calc_short_path(source, k=15)
+    print(distance, prev)
 
     # DIJKSTRA
-    # source, dest = 2, 8
-    # finder.set_graph(graph)
-    # finder.set_algorithm(Dijkstra())
-    # dist, prev = finder.calc_short_path(source, k=15)
-    # print(prev, dist)
+    print('Dijkstra\'s')
+    source, dest = 2, 8
+    finder.set_graph(graph)
+    finder.set_algorithm(Dijkstra())
+    dist, prev = finder.calc_short_path(source, k=15)
+    print(prev, dist)
 
-    # # TEST
+    # TEST
     # n = 8
     # path = []
     # while n != 2:

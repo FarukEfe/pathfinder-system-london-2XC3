@@ -19,7 +19,7 @@ def color_plot_comparison(run_arr: list[list[float]], x: list[float], labels: li
     plt.legend()  
     plt.grid(True)  
     # plt.show()
-    plt.savefig(f'Part2.3/{name}.jpg')
+    plt.savefig(f'part_2_3/{name}.jpg')
 
 def color_plot_comparison_mem(run_arr: list[list[float]], x: list[float], labels: list[str], name: str, means: list[list[float]], colors, xlabel):
     num_runs = len(run_arr)
@@ -33,7 +33,7 @@ def color_plot_comparison_mem(run_arr: list[list[float]], x: list[float], labels
     plt.legend()  
     plt.grid(True)  
     # plt.show()
-    plt.savefig(f'Part2.3/space_{name}.jpg')
+    plt.savefig(f'part_2_3/space_{name}.jpg')
 
 def plot_comparison(run_arr: list[list[float]], x: list[float], name: str, labels: list[str], xname, yname, file_name):
     num_runs = len(run_arr)
@@ -46,7 +46,7 @@ def plot_comparison(run_arr: list[list[float]], x: list[float], name: str, label
     plt.legend()  
     plt.grid(True)  
     # plt.show()
-    plt.savefig(f'Part2.3/{name}.jpg')
+    plt.savefig(f'part_2_3/{name}.jpg')
 
 class Graph:
 

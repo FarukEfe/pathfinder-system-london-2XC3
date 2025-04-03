@@ -1,3 +1,4 @@
+import sys, os
 from Algorithms import AStar, Dijkstra, BellmanFord, SPAlgorithm
 from ShortPathFinder import ShortPathFinder as SPF
 from DataLoader import DataLoader
@@ -39,14 +40,33 @@ def plot(_data, fname: str):
 
 def scatter(_data, fname: str):
     astar, dijkstra, edges = _data['runs_astar'], _data['runs_dijkstra'], _data['edges']
-    fig, axis = plt.subplots(1, 1, figsize=(12,12))
+    fig, ax = plt.figure(figsize=(12,12)), plt.gca()
     fig.subplots_adjust(left=0.08, bottom=0.08, right=0.92, top=0.92, wspace=0.2, hspace=0.5)
-    axis.plot(edges, dijkstra, color='blue', label="Dijkstra's")
-    axis.plot(edges, astar, color='orange', label="A*")
-    axis.set_xlabel('# Edges')
-    axis.set_ylabel('Run time in ms')
-    axis.set_title('Runtime: Dijkstra\'s vs. A* by Graph Density')
-    axis.legend()
+    plt.plot(edges, dijkstra, color='blue', label="Dijkstra's")
+    plt.plot(edges, astar, color='orange', label="A*")
+    plt.title('Runtime: Dijkstra\'s vs. A* by Graph Density', fontsize=24)
+    plt.ylabel('Run time in ms', fontsize=20)
+    plt.xlabel('# Edges', fontsize=20)
+    plt.grid(color='grey', linewidth=1)
+    ax.set_axisbelow(True)
+    plt.legend(loc=2, prop={'size': 20})
+    plt.savefig(fname)
+
+def plot2(_data, fname: str):
+    astars, djs, lab = _data['astars'], _data['djs'], _data['labels']
+    fig, ax = plt.figure(figsize=(12,12)), plt.gca()
+    fig.subplots_adjust(left=0.08, bottom=0.08, right=0.92, top=0.92, wspace=0.2, hspace=0.5)
+    bar1=np.arange(len(lab))
+    bar2=[i+0.45 for i in bar1]
+    plt.bar(bar1,djs,0.4,color='mediumaquamarine',label='Dijkstra\'s')
+    plt.bar(bar2,astars,0.4,color='blue',label='A*')
+    plt.title('Runtime Comparison by Line Transfers', fontsize=24)
+    plt.ylabel('Run time in ms', fontsize=20)
+    plt.xlabel('# Transfers', fontsize=20)
+    plt.xticks(np.add(bar1,bar2)/2,lab, fontsize=16)
+    plt.grid(color='grey', linewidth=1)
+    ax.set_axisbelow(True)
+    plt.legend(loc=2, prop={'size': 20})
     plt.savefig(fname)
 
 
@@ -155,6 +175,9 @@ class Tests:
         runs = [time_dijkstra, time_astar]
         _data = { 'labels': labels, 'runs': runs }
         plot(_data, fname=file_name)
+        
+        avg_astar, avg_dijkstra = sum(time_astar)/len(time_astar), sum(time_dijkstra)/len(time_dijkstra)
+        return avg_astar, avg_dijkstra
     
     def test_lines(self):
         # load .csv data
@@ -189,50 +212,62 @@ class Tests:
         return (src, dest, min(n_line_dj, n_line_astar))
 
 if __name__ == '__main__':
+    # Create plot folder if doesn't exist
+    if not os.path.exists(os.path.join(os.getcwd(),'plots')): os.mkdir(os.path.join(os.getcwd(),'plots'))
+    if not os.path.exists(os.path.join(os.path.join(os.getcwd(),'plots'), 'bars')): os.mkdir(os.path.join(os.path.join(os.getcwd(),'plots'),'bars'))
     tests = Tests()
     # Test A* vs Dijkstra's on London Dataset
     # print('\nStep One\n')
-    # tests.test_london(file_name='plots/P5_London.jpg')
+    # _ = tests.test_london(file_name='plots/P5_London.jpg')
 
     # Test A* vs Dijkstra's on Varying Densities
-    print('\nStep Two\n')
-    n_node, n_edges = 50, [10, 50, 100, 150, 250, 500]
-    astar_runs, dijkstra_runs = [], []
-    for edge in n_edges:
-        print(f'\nEdge: {edge}\n')
-        t_astar, t_dijkstra = tests.test_random(n_node=n_node,n_edge=edge,file_name=f'plots/P5_Edge_{edge}.jpg')
-        astar_runs.append(t_astar)
-        dijkstra_runs.append(t_dijkstra)
+    # print('\nStep Two\n')
+    # n_node, n_edges = 100, list(np.concatenate(np.array([[(10**i)*j for j in range(1,11)] for i in range(1,4)])))
+    # astar_runs, dijkstra_runs = [], []
+    # for edge in n_edges:
+    #     print(f'\nEdge: {edge}\n')
+    #     t_astar, t_dijkstra = tests.test_random(n_node=n_node,n_edge=edge,file_name=f'plots/bars/P5_Edge_{edge}.jpg')
+    #     astar_runs.append(t_astar)
+    #     dijkstra_runs.append(t_dijkstra)
     
-    density_run_data = {
-        'runs_astar': astar_runs,
-        'runs_dijkstra': dijkstra_runs,
-        'edges': n_edges
-    }
-
-    scatter(density_run_data, fname='plots/astar_dijkstra_density_runtimes.jpg')
-
-    # Get line switches of optimal path for varying points and classify them
-    # line_switch = {
-    #     'same_line': [],
-    #     'one_line': [],
-    #     'multiple_line': []
+    # density_run_data = {
+    #     'runs_astar': astar_runs,
+    #     'runs_dijkstra': dijkstra_runs,
+    #     'edges': n_edges
     # }
 
-    # print('\nStep Three\n')
-    # for i in range(300):
-    #     print(f'Test Lines ({i})', end='\r')
-    #     p, q, n = tests.test_lines()
-    #     if n == 1: line_switch['same_line'].append((p,q))
-    #     if n == 2: line_switch['one_line'].append((p,q))
-    #     else: line_switch['multiple_line'].append((p,q))
+    # scatter(density_run_data, fname='plots/astar_dijkstra_density_runtimes.jpg')
+
+    # Get line switches of optimal path for varying points and classify them
+    line_switch = {
+        'same_line': [],
+        'one_line': [],
+        'multiple_line': []
+    }
+
+    print('\nStep Three\n')
+    for i in range(300):
+        print(f'Test Lines ({i})', end='\r')
+        p, q, n = tests.test_lines()
+        if n == 1: line_switch['same_line'].append((p,q))
+        if n == 2: line_switch['one_line'].append((p,q))
+        else: line_switch['multiple_line'].append((p,q))
     
     # # Make sure all lists have same length for fair comparison
-    # min_len = min(len(line_switch['same_line']), len(line_switch['one_line']), len(line_switch['multiple_line']))
-    # line_switch['same_line'], line_switch['one_line'], line_switch['multiple_line'] = line_switch['same_line'][:min_len], line_switch['one_line'][:min_len], line_switch['multiple_line'][:min_len]
+    min_len = min(len(line_switch['same_line']), len(line_switch['one_line']), len(line_switch['multiple_line']))
+    line_switch['same_line'], line_switch['one_line'], line_switch['multiple_line'] = line_switch['same_line'][:min_len], line_switch['one_line'][:min_len], line_switch['multiple_line'][:min_len]
     
     # # Test A* vs Dijkstra's on varying line switches in optimal path
-    # print('\nStep Four\n')
-    # tests.test_london(line_switch['same_line'], file_name='plots/P5_0_Line.jpg')
-    # tests.test_london(line_switch['one_line'], file_name='plots/P5_1_Line.jpg')
-    # tests.test_london(line_switch['multiple_line'], file_name='plots/P5_2_Line.jpg')
+    print('\nStep Four\n')
+    same_avg_astar, same_avg_dj = tests.test_london(line_switch['same_line'], file_name='plots/bars/P5_0_Line.jpg')
+    one_avg_astar, one_avg_dj = tests.test_london(line_switch['one_line'], file_name='plots/bars/P5_1_Line.jpg')
+    mult_avg_astar, mult_avg_dj = tests.test_london(line_switch['multiple_line'], file_name='plots/bars/P5_2_Line.jpg')
+    astars = [same_avg_astar, one_avg_astar, mult_avg_astar]
+    djs = [same_avg_dj, one_avg_dj, mult_avg_dj]
+    labels = ['Same Line', 'One Line', 'Mult. Lines']
+    line_data = {
+        'djs': djs,
+        'astars': astars,
+        'labels': labels
+    }
+    plot2(line_data, fname='plots/compare_astar_dj_lines.jpg')
