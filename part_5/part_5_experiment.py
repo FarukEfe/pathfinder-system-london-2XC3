@@ -217,26 +217,26 @@ if __name__ == '__main__':
     if not os.path.exists(os.path.join(os.path.join(os.getcwd(),'plots'), 'bars')): os.mkdir(os.path.join(os.path.join(os.getcwd(),'plots'),'bars'))
     tests = Tests()
     # Test A* vs Dijkstra's on London Dataset
-    # print('\nStep One\n')
-    # _ = tests.test_london(file_name='plots/P5_London.jpg')
+    print('\nStep One\n')
+    _ = tests.test_london(file_name='plots/P5_London.jpg')
 
     # Test A* vs Dijkstra's on Varying Densities
-    # print('\nStep Two\n')
-    # n_node, n_edges = 100, list(np.concatenate(np.array([[(10**i)*j for j in range(1,11)] for i in range(1,4)])))
-    # astar_runs, dijkstra_runs = [], []
-    # for edge in n_edges:
-    #     print(f'\nEdge: {edge}\n')
-    #     t_astar, t_dijkstra = tests.test_random(n_node=n_node,n_edge=edge,file_name=f'plots/bars/P5_Edge_{edge}.jpg')
-    #     astar_runs.append(t_astar)
-    #     dijkstra_runs.append(t_dijkstra)
+    print('\nStep Two\n')
+    n_node, n_edges = 100, list(np.concatenate(np.array([[(10**i)*j for j in range(1,11)] for i in range(1,4)])))
+    astar_runs, dijkstra_runs = [], []
+    for edge in n_edges:
+        print(f'\nEdge: {edge}\n')
+        t_astar, t_dijkstra = tests.test_random(n_node=n_node,n_edge=edge,file_name=f'plots/bars/P5_Edge_{edge}.jpg')
+        astar_runs.append(t_astar)
+        dijkstra_runs.append(t_dijkstra)
     
-    # density_run_data = {
-    #     'runs_astar': astar_runs,
-    #     'runs_dijkstra': dijkstra_runs,
-    #     'edges': n_edges
-    # }
+    density_run_data = {
+        'runs_astar': astar_runs,
+        'runs_dijkstra': dijkstra_runs,
+        'edges': n_edges
+    }
 
-    # scatter(density_run_data, fname='plots/astar_dijkstra_density_runtimes.jpg')
+    scatter(density_run_data, fname='plots/astar_dijkstra_density_runtimes.jpg')
 
     # Get line switches of optimal path for varying points and classify them
     line_switch = {
@@ -246,7 +246,7 @@ if __name__ == '__main__':
     }
 
     print('\nStep Three\n')
-    for i in range(300):
+    for i in range(1000):
         print(f'Test Lines ({i})', end='\r')
         p, q, n = tests.test_lines()
         if n == 1: line_switch['same_line'].append((p,q))
