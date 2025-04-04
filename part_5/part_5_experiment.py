@@ -212,13 +212,15 @@ class Tests:
         return (src, dest, min(n_line_dj, n_line_astar))
 
 if __name__ == '__main__':
+    save_dir = os.path.join(os.getcwd(), 'part_5', 'plots')
+    save_bars = os.path.join(save_dir, 'bars')
     # Create plot folder if doesn't exist
-    if not os.path.exists(os.path.join(os.getcwd(),'plots')): os.mkdir(os.path.join(os.getcwd(),'plots'))
-    if not os.path.exists(os.path.join(os.path.join(os.getcwd(),'plots'), 'bars')): os.mkdir(os.path.join(os.path.join(os.getcwd(),'plots'),'bars'))
+    if not os.path.exists(save_dir): os.mkdir(save_dir)
+    if not os.path.exists(save_bars): os.mkdir(save_bars)
     tests = Tests()
     # Test A* vs Dijkstra's on London Dataset
     print('\nStep One\n')
-    _ = tests.test_london(file_name='plots/P5_London.jpg')
+    _ = tests.test_london(file_name=os.path.join(save_dir, 'P5_London.jpg'))
 
     # Test A* vs Dijkstra's on Varying Densities
     print('\nStep Two\n')
@@ -226,7 +228,7 @@ if __name__ == '__main__':
     astar_runs, dijkstra_runs = [], []
     for edge in n_edges:
         print(f'\nEdge: {edge}\n')
-        t_astar, t_dijkstra = tests.test_random(n_node=n_node,n_edge=edge,file_name=f'plots/bars/P5_Edge_{edge}.jpg')
+        t_astar, t_dijkstra = tests.test_random(n_node=n_node,n_edge=edge,file_name=os.path.join(save_bars,f'P5_Edge_{edge}.jpg'))
         astar_runs.append(t_astar)
         dijkstra_runs.append(t_dijkstra)
     
@@ -236,7 +238,7 @@ if __name__ == '__main__':
         'edges': n_edges
     }
 
-    scatter(density_run_data, fname='plots/astar_dijkstra_density_runtimes.jpg')
+    scatter(density_run_data, fname=os.path.join(save_dir, 'astar_dijkstra_density_runtimes.jpg'))
 
     # Get line switches of optimal path for varying points and classify them
     line_switch = {
@@ -259,9 +261,9 @@ if __name__ == '__main__':
     
     # # Test A* vs Dijkstra's on varying line switches in optimal path
     print('\nStep Four\n')
-    same_avg_astar, same_avg_dj = tests.test_london(line_switch['same_line'], file_name='plots/bars/P5_0_Line.jpg')
-    one_avg_astar, one_avg_dj = tests.test_london(line_switch['one_line'], file_name='plots/bars/P5_1_Line.jpg')
-    mult_avg_astar, mult_avg_dj = tests.test_london(line_switch['multiple_line'], file_name='plots/bars/P5_2_Line.jpg')
+    same_avg_astar, same_avg_dj = tests.test_london(line_switch['same_line'], file_name=os.path.join(save_bars, 'P5_0_Line.jpg'))
+    one_avg_astar, one_avg_dj = tests.test_london(line_switch['one_line'], file_name=os.path.join(save_bars, 'P5_1_Line.jpg'))
+    mult_avg_astar, mult_avg_dj = tests.test_london(line_switch['multiple_line'], file_name=os.path.join(save_bars, 'P5_2_Line.jpg'))
     astars = [same_avg_astar, one_avg_astar, mult_avg_astar]
     djs = [same_avg_dj, one_avg_dj, mult_avg_dj]
     labels = ['Same Line', 'One Line', 'Mult. Lines']
@@ -270,4 +272,4 @@ if __name__ == '__main__':
         'astars': astars,
         'labels': labels
     }
-    plot2(line_data, fname='plots/compare_astar_dj_lines.jpg')
+    plot2(line_data, fname=os.path.join(save_dir, 'compare_astar_dj_lines.jpg'))
