@@ -8,6 +8,11 @@ from random import sample, randint
 from sys import getsizeof
 import os
 
+from Algorithms import Dijkstra, BellmanFord, SPAlgorithm
+from Graphs import WeightedGraph, Graph
+
+# MARK: Plots
+
 def color_plot_comparison(run_arr: list[list[float]], x: list[float], labels: list[str], name: str, means: list[list[float]], colors, xlabel):
     num_runs = len(run_arr)
     plt.figure(figsize=(12, 8))
@@ -49,59 +54,8 @@ def plot_comparison(run_arr: list[list[float]], x: list[float], name: str, label
     # plt.show()
     plt.savefig(os.path.join(os.getcwd(), 'part_2_3', f'{name}.jpg'))
 
-class Graph:
+# MARK: Garbage
 
-    def __init__(self, nodes: int):
-        self.graph: dict[int: list[int]] = {}
-        self.weights: dict[tuple[int,int]: int] = {}
-        for node in range(nodes):
-            self.graph[node] = []
-    
-    def get_adj_nodes(self, node: int) -> list[int]:
-        if node not in self.graph.keys(): return -1
-        return self.graph[node]
-
-    def add_node(self, node: int):
-        nodes = list(self.graph.keys())
-        if node in nodes: return 
-        self.graph[node] = []
-
-    def has_edge(self, start: int, end: int):
-        return self.graph[start] and (end in self.graph[start])
-
-    def add_edge(self, start:int, end:int, w:float):
-        nodes = list(self.graph.keys())
-        if start not in nodes or end not in nodes:
-            #print('Discarding `has_edge` call since not both endpoints exist.')
-            return
-        
-        if self.has_edge(start, end):
-            #print(f'Edge ({start},{end}) already exists. Updating weight...')
-            self.weights[(start,end)] = w
-            self.weights[(end,start)] = w
-
-        self.graph[start].append(end)
-        self.weights[(start,end)] = w
-
-        self.graph[end].append(start)
-        self.weights[(end,start)] = w
-
-    def get_num_of_nodes(self) -> int:
-        return len(list(self.graph.keys()))
-    
-    def w(node: int) -> float:
-        raise NotImplementedError(
-            "Proper implementation is listed in WeightedGraph class type. Use that instance instead."
-        )
-
-class WeightedGraph(Graph):
-
-    def __init__(self, nodes):
-        super().__init__(nodes=nodes)
-
-    def w(self, node1: int, node2: int) -> float:
-        return self.weights[(node1,node2)]
-    
 def dijkstra(graph: WeightedGraph, source: int, k: int):
 
     dist_table = { v: float('inf') for v in graph.graph.keys() }
@@ -184,24 +138,18 @@ def bellmanFord_mem(graph: WeightedGraph, source: int, k: int):
     distances = {vertex: float('inf') for vertex,_ in graph.graph.items()}
     prev = {vertex: -1 for vertex,_ in graph.graph.items()}
     distances[source] = 0
-    mem_dis = 0
     # Relax all edges up to k times
     for _ in range(k):
         # Copy of distances to avoid interference during updates
-        new_distances = copy.deepcopy(distances)
-        temp = getsizeof(new_distances)
-        if temp > mem_dis:
-            mem_dis = temp
         # For each edge in the graph
         for u in graph.graph.keys():
             for v in graph.graph[u]:
                 weight = graph.weights[(u, v)]
-                if distances[u] + weight < new_distances[v]:
+                if distances[u] + weight < distances[v]:
                     prev[v] = u
-                    new_distances[v] = distances[u] + weight
+                    distances[v] = distances[u] + weight
 
-        distances = new_distances
-    memo = getsizeof(distances) + getsizeof(prev) + mem_dis
+    memo = getsizeof(distances) + getsizeof(prev)
     return memo
     
 def create_random_graph(nodes: int, edges: int, w_min: float, w_max: float) -> WeightedGraph:
@@ -223,6 +171,9 @@ def generate_best_case_weighted_graph(nodes: int) -> WeightedGraph:
         best_case_graph.add_edge(i, i + 1, 1)  # Add an edge with weight 1
     
     return best_case_graph
+
+# MARK: Experiments
+
 # full_density_proper_k
 def experiment1():
     N = 25
@@ -264,6 +215,7 @@ def experiment1():
     # print(d, bf)
     color_plot_comparison(run_arr, xbar, labels, "full_density_proper_k", means, colors, "nodes")
     return 0
+
 # 50_density_proper_k
 def experiment2():
     N = 25
@@ -305,6 +257,7 @@ def experiment2():
     # print(d, bf)
     color_plot_comparison(run_arr, xbar, labels, "50_density_proper_k", means, colors, "nodes")
     return 0
+
 # nodes_test_fix_edges=20_proper_k
 def experiment3():
     N = 25

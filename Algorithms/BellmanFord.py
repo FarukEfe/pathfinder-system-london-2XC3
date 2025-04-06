@@ -16,17 +16,13 @@ class BellmanFord(SPAlgorithm):
 
         # Relax all edges up to k times
         for _ in range(k):
-            # Copy of distances to avoid interference during updates
-            new_distances = copy.deepcopy(distances)
 
             # For each edge in the graph
             for u in graph.graph.keys():
                 for v in graph.graph[u]:
                     weight = graph.w(u, v)
-                    if distances[u] + weight < new_distances[v]:
+                    if distances[u] + weight < distances[v]:
                         prev[v] = u
-                        new_distances[v] = distances[u] + weight
-
-            distances = new_distances
+                        distances[v] = distances[u] + weight
 
         return distances, prev
