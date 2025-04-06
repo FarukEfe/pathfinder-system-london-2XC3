@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     # BELLMAN FORD
     print('Bellman-Ford')
-    source, dest = 2, 8
+    source, dest = 3, 9
     finder.set_graph(graph)
     finder.set_algorithm(BellmanFord())
     distance, prev = finder.calc_short_path(source, k=15)
@@ -45,6 +45,9 @@ if __name__ == "__main__":
     n = 8
     path = []
     while n != 2:
+        if n == -1:
+            path = []
+            break
         path = [n] + path
         n = prev[n]
     print(path)
